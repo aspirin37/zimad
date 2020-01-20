@@ -6,11 +6,24 @@
     <div class="row mb-5">
       <div class="col-4 d-flex flex-column">
         <h6>Конфиг:</h6>
-        <input
+        <!-- <input
+          ref="file"
           type="file"
           class="form-control-file mt-auto"
           @change="readConfig"
+        /> -->
+        <input
+          ref="file"
+          type="file"
+          class="d-none"
+          @change="readConfig"
         />
+        <button
+          class="btn btn-secondary"
+          @click="selectFile"
+        >
+          Выбрать файл
+        </button>
       </div>
       <div class="col-3">
         <h6>Выберите действие:</h6>
@@ -84,14 +97,19 @@ export default {
     execute() {
       this.result = this.config[this.actionSelected].action(this.leftNumber, this.rightNumber);
     },
+    selectFile() {
+      this.$refs.file.click();
+    },
     readConfig(evt) {
       const file = evt.target.files[0];
       const reader = new FileReader();
 
       reader.onload = e => {
+        this.actionSelected = 'sum';
+        alert('Конфигурация изменена. Для повторного изменения отредактируйте файл и выберите его еще раз.');
         window.eval(e.target.result);
         this.externalConfig = externalConfig;
-        alert('Конфигурация изменена');
+        this.$refs.file.value = '';
       };
       reader.readAsText(file);
     },
